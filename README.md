@@ -56,7 +56,6 @@ The user interface is built on a custom design system that prioritizes clarity a
 Define local environment variables in a `.env` file at the root directory (see `.env.example` for details):
 ```env
 MISTRAL_API_KEY=your_secured_key
-HF_TOKEN=your_inference_token
 DB_PASSWORD=your_mysql_credentials
 ```
 
