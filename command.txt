@@ -1,3 +1,5 @@
+#For reference to execute in order
+
 Run the server.py:     python -m uvicorn server:app --reload
 Connectivity of MySQL and server.js:             at src:    node server.js
 Execution of the frontend website (at frontend):            npm start
