@@ -405,26 +405,35 @@ function App() {
       }
 
       const response = await axios.post("http://localhost:5003/store-option", {
-        userId, option: selectedOption, language,
-        codePrompt: finalPrompt, modifyCode: finalPrompt, modifyLogic,
+        userId,
+        option: selectedOption,
+        language,
+        codePrompt: finalPrompt,
+        modifyCode: finalPrompt,
+        modifyLogic,
       });
 
       setLoading(false);
 
-      if (response.data.aiOutput) {
-        // Strip markdown code fences (```lang ... ```)
-        let cleaned = response.data.aiOutput;
-        cleaned = cleaned.replace(/```[\w]*\n?/g, '').replace(/```$/gm, '').trim();
-        setOutputText(cleaned);
+      /* 🔥 CLEAN OUTPUT EXTRACTION (FROM REFERENCE) */
+      const aiOutput = response.data.aiOutput;
+
+      if (typeof aiOutput === "string" && aiOutput.trim() !== "") {
+        const cleaned = aiOutput
+          .replace(/```[\s\S]*?\n/, "") // remove ```language
+          .replace(/```$/, "");         // remove closing ```
+        setOutputText(cleaned.trim());
         setMessage("Success!");
       } else {
-        setMessage(response.data.message);
+        setOutputText("No output received.");
+        setMessage(response.data.message || "Error receiving output.");
       }
     } catch (error) {
       setLoading(false);
       setMessage("Error. Please try again.");
     }
   };
+
 
   // Navigate to Analyze tab with codes from Modify section
   const goToAnalyze = useCallback(() => {
