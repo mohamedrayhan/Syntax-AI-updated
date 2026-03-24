@@ -367,7 +367,7 @@ function App() {
     setMessage("");
 
     try {
-      const response = await axios.post("http://localhost:5003/auth", {
+      const response = await axios.post("/auth", {
         username, password, action,
       });
 
@@ -404,7 +404,7 @@ function App() {
         }
       }
 
-      const response = await axios.post("http://localhost:5003/store-option", {
+      const response = await axios.post("/store-option", {
         userId,
         option: selectedOption,
         language,
@@ -455,7 +455,7 @@ function App() {
     setAnalysisText("");
 
     try {
-      const response = await axios.post("http://localhost:5003/analyze-code", {
+      const response = await axios.post("/analyze-code", {
         userId,
         originalCode: modifyCode,
         modifiedCode: outputText,

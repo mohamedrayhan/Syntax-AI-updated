@@ -12,6 +12,9 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+// Serve static files from the React app build directory
+app.use(express.static(path.join(__dirname, "../build")));
+
 /* ================= AUTH ================= */
 app.post("/auth", async (req, res) => {
   const { username, password, action } = req.body;
@@ -166,7 +169,15 @@ Higher scores = better efficiency. Be precise with your /10 ratings.`;
   }
 });
 
-app.listen(5003, () =>
-  console.log("Server running on port 5003")
+// Special route for SPA support: serve index.html for any unknown routes
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../build", "index.html"));
+});
+
+const PORT = process.env.PORT || 7860;
+app.listen(PORT, () =>
+  console.log(`Server running on port ${PORT}`)
 );
+
+
 
