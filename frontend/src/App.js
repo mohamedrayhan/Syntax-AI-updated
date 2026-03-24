@@ -202,7 +202,7 @@ function GalaxyCanvas() {
   }, []);
 
   return (
-    <canvas ref={canvasRef} style={{ position: "fixed", inset: 0, zIndex: 0, width: "100%", height: "100%", background: "#000" }} />
+    <canvas ref={canvasRef} style={{ position: "fixed", inset: 0, zIndex: 0, width: "100%", height: "100%", background: "#000", pointerEvents: "none" }} />
   );
 }
 
@@ -468,6 +468,10 @@ function App() {
 
         // Helper to extract note/description for a section
         const getNote = (text, sectionHeader) => {
+          if (sectionHeader === "SUMMARY") {
+            const match = text.match(/SUMMARY:?\s*([\s\S]*?)(?=\n\n|OVERALL EFFICIENCY SCORE:|$)/i);
+            return match ? match[1].trim() : "";
+          }
           const regex = new RegExp(`${sectionHeader}[^\\n]*\\n([\\s\\S]*?)(?=\\n\\n|[A-Z ]+:)`, "i");
           const match = text.match(regex);
           return match ? match[1].trim() : "";
@@ -542,7 +546,7 @@ function App() {
             {message && <p className={`msg ${message.includes("Error") ? "error" : ""}`}>{message}</p>}
           </div>
         ) : (
-          <div className="dashboard">
+          <div className="dashboard" style={{ maxWidth: selectedOption === "Analyze Code" ? "1200px" : "1100px" }}>
             <div className="logo large">
               <span className="logo-text">SYNTAX</span>
               <span className="logo-ai">AI</span>
@@ -552,24 +556,24 @@ function App() {
             {selectedOption !== "Analyze Code" ? (
               <div className="nav-buttons">
                 <button className={selectedOption === "Generate Code" ? "active" : ""}
-                  onClick={() => { 
-                    setSelectedOption("Generate Code"); 
-                    setOutputText(""); 
-                    setMessage(""); 
-                    setCodePrompt(""); 
-                    setModifyCode(""); 
-                    setLanguage(""); 
-                    setModifyLogic(""); 
+                  onClick={() => {
+                    setSelectedOption("Generate Code");
+                    setOutputText("");
+                    setMessage("");
+                    setCodePrompt("");
+                    setModifyCode("");
+                    setLanguage("");
+                    setModifyLogic("");
                   }}>GENERATE</button>
                 <button className={selectedOption === "Modify Code" ? "active" : ""}
-                  onClick={() => { 
-                    setSelectedOption("Modify Code"); 
-                    setOutputText(""); 
-                    setMessage(""); 
-                    setCodePrompt(""); 
-                    setModifyCode(""); 
-                    setLanguage(""); 
-                    setModifyLogic(""); 
+                  onClick={() => {
+                    setSelectedOption("Modify Code");
+                    setOutputText("");
+                    setMessage("");
+                    setCodePrompt("");
+                    setModifyCode("");
+                    setLanguage("");
+                    setModifyLogic("");
                   }}>MODIFY</button>
                 <button onClick={() => { setIsLoggedIn(false); setSelectedOption(""); }}>LOGOUT</button>
               </div>
@@ -634,12 +638,24 @@ function App() {
 
             {/* ── ANALYZE workspace — full page ── */}
             {selectedOption === "Analyze Code" && (
-              <div className="analyze-workspace">
-                {/* Run button — before analysis */}
+              <div className="analyze-workspace" style={{ paddingBottom: 60 }}>
+                {/* Code preview row before running */}
                 {!analysisData && !loading && (
-                  <button className="active analyze-run-btn" onClick={handleAnalyze}>
-                    🔬 RUN EFFICIENCY ANALYSIS
-                  </button>
+                  <div style={{ marginBottom: 24 }}>
+                    <div className="analyze-header">
+                      <div className="code-preview">
+                        <h4>📄 ORIGINAL CODE</h4>
+                        <pre>{modifyCode || "// No original code found"}</pre>
+                      </div>
+                      <div className="code-preview">
+                        <h4>✨ MODIFIED CODE</h4>
+                        <pre>{outputText || "// No modified code found"}</pre>
+                      </div>
+                    </div>
+                    <button className="active analyze-run-btn" onClick={handleAnalyze}>
+                      🔬 RUN EFFICIENCY ANALYSIS
+                    </button>
+                  </div>
                 )}
 
                 {/* Visual comparison charts + summary */}
